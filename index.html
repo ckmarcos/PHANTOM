@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> 𝙋𝙃𝘼𝙉𝙏𝙊𝙈 </title>
+    <!-- Firebase App (o principal) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- Firebase Storage -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #ff6600;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        .navbar {
+            background-color: var(--dark);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.8rem;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1593640408182-31c70c8268f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1440&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+        
+        .product-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 8px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-img {
+            height: 200px;
+            object-fit: contain;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+        
+        .product-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            height: 50px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .product-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .product-old-price {
+            text-decoration: line-through;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .badge-discount {
+            background-color: var(--secondary);
+            color: white;
+            font-weight: 600;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .category-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            height: 100%;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-title {
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .admin-link {
+            color: #fff !important;
+            background-color: var(--secondary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-left: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        .logo-img {
+            height: 100px;   /* aumenta o tamanho da logo */
+            width: auto;    /* mantém a proporção */
+            margin-right: px; /* dá um espaço entre a logo e o menu */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+  <img src="./img/phantom_logo.png" alt="Phantom Logo">
+</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">PCs Completos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Hardware</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Periféricos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Promoções</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="#" class="btn btn-outline-light me-2"><i class="fas fa-search"></i></a>
+                    <a href="#" class="btn btn-outline-light me-2"><i class="fas fa-user"></i></a>
+                    <a href="#" class="btn btn-outline-light me-2"><i class="fas fa-shopping-cart"></i> <span class="badge bg-secondary">0</span></a>
+                    <a href="login.html" class="btn admin-link"><i class="fas fa-lock"></i> Área Admin</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">As Melhores Peças para seu Computador</h1>
+            <p class="lead mb-4">Encontre tudo que precisa para montar ou atualizar seu PC com os melhores preços</p>
+            <a href="#" class="btn btn-primary btn-lg">Ver Ofertas <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </section>
+
+    <!-- Categorias -->
+    <section class="container mb-5">
+        <h2 class="section-title">Categorias</h2>
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h5>PCs Completos</h5>
+                    <p class="text-muted">Computadores montados</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h5>Processadores</h5>
+                    <p class="text-muted">CPUs para seu PC</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-compact-disc"></i>
+                    </div>
+                    <h5>Placas de Vídeo</h5>
+                    <p class="text-muted">GPUs de alta performance</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <h5>Memórias RAM</h5>
+                    <p class="text-muted">Acelere seu computador</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Produtos em Destaque -->
+    <section class="container mb-5">
+        <h2 class="section-title">Destaques</h2>
+        <div class="row g-4" id="featured-products">
+            <!-- Produtos serão carregados via JavaScript -->
+            <div class="col-md-3">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/250x200/EEE?text=Carregando..." class="card-img-top product-img" alt="Produto">
+                    <div class="card-body">
+                        <h5 class="product-title">Carregando produto...</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="product-price">R$ ...</span>
+                            <span class="product-old-price text-muted">R$ ...</span>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-sm">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/250x200/EEE?text=Carregando..." class="card-img-top product-img" alt="Produto">
+                    <div class="card-body">
+                        <h5 class="product-title">Carregando produto...</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="product-price">R$ ...</span>
+                            <span class="product-old-price text-muted">R$ ...</span>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-sm">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/250x200/EEE?text=Carregando..." class="card-img-top product-img" alt="Produto">
+                    <div class="card-body">
+                        <h5 class="product-title">Carregando produto...</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="product-price">R$ ...</span>
+                            <span class="product-old-price text-muted">R$ ...</span>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-sm">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/250x200/EEE?text=Carregando..." class="card-img-top product-img" alt="Produto">
+                    <div class="card-body">
+                        <h5 class="product-title">Carregando produto...</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="product-price">R$ ...</span>
+                            <span class="product-old-price text-muted">R$ ...</span>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-sm">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5 class="footer-title">PHANTOM</h5>
+                    <p>A melhor loja de hardware e PCs completos do Brasil. Qualidade e preço baixo sempre.</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="footer-title">Institucional</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Quem Somos</a></li>
+                        <li><a href="#">Nossas Lojas</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                        <li><a href="#">Termos e Condições</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="footer-title">Ajuda</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Como Comprar</a></li>
+                        <li><a href="#">Prazos de Entrega</a></li>
+                        <li><a href="#">Política de Trocas</a></li>
+                        <li><a href="#">Dúvidas Frequentes</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="footer-title">Contato</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone me-2"></i> (11) 9999-9999</li>
+                        <li><i class="fas fa-envelope me-2"></i> contato@techplus.com.br</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> São Paulo, SP</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <p class="mb-0">&copy; 2023 TechPlus - Todos os direitos reservados</p>
+                </div>
+                <div class="col-md-6 mb-3 text-md-end">
+                    <div class="d-flex justify-content-md-end">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1GnV9FDVSGpOEz0m-AFxPm2S2Xbv3nok",
+            authDomain: "techplus-4745f.firebaseapp.com",
+            projectId: "techplus-4745f",
+            storageBucket: "techplus-4745f.firebasestorage.app",
+            messagingSenderId: "112849812305",
+            appId: "1:112849812305:web:04bcf9f3c513305c433170",
+            measurementId: "G-MZM7HCK0PM"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Carregar produtos para a loja
+        function loadStoreProducts() {
+            const featuredProducts = document.getElementById('featured-products');
+            featuredProducts.innerHTML = '';
+            
+            db.collection('products').limit(8).get()
+                .then(querySnapshot => {
+                    if (querySnapshot.empty) {
+                        featuredProducts.innerHTML = `
+                            <div class="col-12 text-center">
+                                <p>Nenhum produto encontrado.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    querySnapshot.forEach(doc => {
+                        const product = doc.data();
+                        featuredProducts.innerHTML += `
+                            <div class="col-md-3">
+                                <div class="card product-card">
+                                    <img src="${product.imageUrl || 'https://via.placeholder.com/250x200/EEE?text=Produto'}" class="card-img-top product-img" alt="${product.name}">
+                                    <div class="card-body">
+                                        <h5 class="product-title">${product.name}</h5>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="product-price">R$ ${product.price.toFixed(2)}</span>
+                                            ${product.oldPrice ? `<span class="product-old-price text-muted">R$ ${product.oldPrice.toFixed(2)}</span>` : ''}
+                                        </div>
+                                        <div class="d-grid">
+                                            <button class="btn btn-primary btn-sm">Comprar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar produtos: ", error);
+                    featuredProducts.innerHTML = `
+                        <div class="col-12 text-center">
+                            <p>Erro ao carregar produtos. Tente novamente mais tarde.</p>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Inicialização
+        $(document).ready(function() {
+            loadStoreProducts();
+        });
+    </script>
+</body>
+</html>

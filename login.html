@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝙋𝙃𝘼𝙉𝙏𝙊𝙈 - Login</title>
+    <!-- Firebase App (o principal) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #ff6600;
+            --dark: #1a1a1a;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        
+        .admin-info {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .store-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h3 class="login-title"><i class="fas fa-lock me-2"></i> Área do Vendedor</h3>
+        <form id="login-form">
+            <div class="mb-3">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+        </form>
+        
+        <div class="admin-info">
+            <p><strong>Credenciais de teste:</strong></p>
+            <p>Email: admin@techplus.com.br</p>
+            <p>Senha: 123456</p>
+        </div>
+        
+        <div class="store-link">
+            <a href="index.html" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-store me-1"></i> Voltar para a Loja
+            </a>
+        </div>
+        
+        <div id="login-message" class="alert alert-danger mt-3" style="display: none;"></div>
+    </div>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1GnV9FDVSGpOEz0m-AFxPm2S2Xbv3nok",
+            authDomain: "techplus-4745f.firebaseapp.com",
+            projectId: "techplus-4745f",
+            storageBucket: "techplus-4745f.firebasestorage.app",
+            messagingSenderId: "112849812305",
+            appId: "1:112849812305:web:04bcf9f3c513305c433170",
+            measurementId: "G-MZM7HCK0PM"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        // Elementos da DOM
+        const loginForm = document.getElementById('login-form');
+        const loginMessage = document.getElementById('login-message');
+        
+        // Event Listeners
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Fazer login
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    // Verificar se é um email de administrador
+                    if (userCredential.user.email.endsWith('@techplus.com.br') || 
+                        userCredential.user.email.endsWith('@escola.pr.gov.br')) {
+                        // Login bem-sucedido - redirecionar para o painel admin
+                        window.location.href = 'admin.html';
+                    } else {
+                        // Não é um administrador - fazer logout e mostrar mensagem
+                        auth.signOut();
+                        showMessage('Acesso permitido apenas para administradores.', 'danger');
+                    }
+                })
+                .catch(error => {
+                    // Tratar erros de login
+                    let errorMessage = 'Erro ao fazer login. ';
+                    
+                    switch (error.code) {
+                        case 'auth/invalid-email':
+                            errorMessage += 'Email inválido.';
+                            break;
+                        case 'auth/user-disabled':
+                            errorMessage += 'Esta conta foi desativada.';
+                            break;
+                        case 'auth/user-not-found':
+                            errorMessage += 'Nenhum usuário encontrado com este email.';
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage += 'Senha incorreta.';
+                            break;
+                        default:
+                            errorMessage += error.message;
+                    }
+                    
+                    showMessage(errorMessage, 'danger');
+                });
+        });
+        
+        // Função para mostrar mensagens
+        function showMessage(message, type) {
+            loginMessage.textContent = message;
+            loginMessage.className = `alert alert-${type} mt-3`;
+            loginMessage.style.display = 'block';
+            
+            // Esconder a mensagem após 5 segundos
+            setTimeout(() => {
+                loginMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Verificar se já está logado ao carregar a página
+        auth.onAuthStateChanged(user => {
+            if (user && (user.email.endsWith('@techplus.com.br') || 
+                         user.email.endsWith('@escola.pr.gov.br'))) {
+                // Já está logado como admin - redirecionar
+                window.location.href = 'admin.html';
+            }
+        });
+    </script>
+</body>
+</html>
