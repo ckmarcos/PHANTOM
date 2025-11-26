@@ -616,6 +616,46 @@
                 max-height: 100%;
                 object-fit: contain;
         }
+
+        /* Atalhos para Sugestões e Pedidos */
+        .extra-forms {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .extra-card {
+            background: linear-gradient(135deg, var(--gray), var(--dark));
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--light);
+            transition: 0.3s;
+        }
+
+        .extra-card i {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .extra-card h4 {
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .extra-card p {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .extra-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -892,6 +932,21 @@
                         <button type="submit" class="btn">Enviar Mensagem</button>
                     </form>
                 </div>
+            </div>
+            
+            <!-- Opções Extras -->
+            <div class="extra-forms">
+                <a href="sugestoes.html" class="extra-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4>Sugestões</h4>
+                    <p>Envie suas ideias para que possamos melhorar nossos serviços.</p>
+                </a>
+
+                <a href="pedido.html" class="extra-card">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h4>Pedido</h4>
+                    <p>Realize seu pedido de forma rápida e prática.</p>
+                </a>
             </div>
         </div>
     </section>
