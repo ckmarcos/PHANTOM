@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Phantom - Pedido</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{
+    background:#0a0a0a;
+    color:#fff;
+    font-family: Arial, sans-serif;
+}
+.container{
+    max-width:1000px;
+    margin:100px auto;
+    padding:40px;
+    background:#121212;
+    border-radius:12px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:40px;
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(138,43,226,0.3);
+}
+h2{
+    text-align:center;
+    margin-bottom:30px;
+    color:#00ff88;
+    grid-column:span 2;
+}
+input, select, textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:6px;
+    background:#2a2a2a;
+    color:#fff;
+}
+button{
+    width:100%;
+    padding:12px;
+    background:#8a2be2;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:hover{background:#6a1cb8;}
+.resumo{
+    background:#1c1c1c;
+    padding:20px;
+    border-radius:10px;
+}
+.resumo h3{
+    color:#00ff88;
+    margin-bottom:15px;
+}
+.voltar{
+    grid-column:span 2;
+    text-align:center;
+}
+.voltar a{
+    color:#00ff88;
+    text-decoration:none;
+}
+.success{
+    margin-top:20px;
+    color:#00ff88;
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Formulário de Pedido</h2>
+
+    <form id="pedidoForm">
+        <input type="text" id="nome" placeholder="Nome Completo" required>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="text" id="telefone" placeholder="Telefone" required>
+
+        <select id="produto" required>
+            <option value="">Selecione o Produto</option>
+            <option value="PC Gamer Phantom X">PC Gamer Phantom X</option>
+            <option value="RTX 4080">Placa de Vídeo RTX 4080</option>
+            <option value="Teclado RGB">Teclado Mecânico RGB</option>
+            <option value="Monitor 240Hz">Monitor Gamer 240Hz</option>
+        </select>
+
+        <input type="number" id="quantidade" placeholder="Quantidade" min="1" required>
+        <textarea id="obs" rows="4" placeholder="Observações"></textarea>
+
+        <button type="submit">Finalizar Pedido</button>
+        <p class="success" id="msg">✅ Pedido registrado com sucesso!</p>
+    </form>
+
+    <div class="resumo">
+        <h3>Resumo do Pedido</h3>
+        <p><b>Cliente:</b> <span id="rNome">---</span></p>
+        <p><b>Produto:</b> <span id="rProduto">---</span></p>
+        <p><b>Quantidade:</b> <span id="rQtd">---</span></p>
+        <p><b>Contato:</b> <span id="rEmail">---</span></p>
+    </div>
+
+    <div class="voltar">
+        <a href="index.html">⬅ Voltar para o site</a>
+    </div>
+</div>
+
+<script>
+document.getElementById('pedidoForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    // BUSCAR VALORES CORRETAMENTE
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
+    const produto = document.getElementById('produto').value;
+    const qtd = document.getElementById('quantidade').value;
+
+    // ATUALIZAR RESUMO
+    document.getElementById('rNome').innerText = nome;
+    document.getElementById('rProduto').innerText = produto;
+    document.getElementById('rQtd').innerText = qtd;
+    document.getElementById('rEmail').innerText = email;
+
+    // SALVAR NO LOCALSTORAGE (OPCIONAL, MAS ÓTIMO PARA APRESENTAÇÃO)
+    const pedido = {nome, email, produto, qtd};
+    localStorage.setItem("pedidoPhantom", JSON.stringify(pedido));
+
+    // MENSAGEM DE SUCESSO
+    document.getElementById('msg').style.display = "block";
+
+    // LIMPAR FORMULÁRIO
+    this.reset();
+});
+</script>
+
+</body>
+</html>
